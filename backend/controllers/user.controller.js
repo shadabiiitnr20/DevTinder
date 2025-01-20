@@ -8,7 +8,7 @@ export const updateProfile = async (req, res) => {
     //If users updates the image, handle that case
     if (image) {
       //Send the imgae in base64 format
-      if (image.startWith('data:image')) {
+      if (image.startsWith('data:image')) {
         try {
           const uploadResponse = await cloudinary.uploader.upload(image);
           updatedData.image = uploadResponse.secure_url;
