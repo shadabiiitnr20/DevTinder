@@ -51,12 +51,12 @@ const userSchema = new mongoose.Schema(
     },
     image: {
       type: String,
-      default: 'https://geographyandyou.com/images/user-profile.png',
-      validate(value) {
-        if (!validator.isURL(value)) {
-          throw new Error(`Image URL is not valid: ${value}`);
-        }
-      },
+      // default: 'https://geographyandyou.com/images/user-profile.png',
+      // validate(value) {
+      //   if (!validator.isURL(value)) {
+      //     throw new Error(`Image URL is not valid: ${value}`);
+      //   }
+      // },
     },
     lastLogin: {
       type: Date,

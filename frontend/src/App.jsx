@@ -18,12 +18,7 @@ const App = () => {
     checkAuth();
   }, [checkAuth]);
 
-  if (checkingAuth)
-    return (
-      <p className='text-3xl flex justify-center items-center mt-40'>
-        Loading...
-      </p>
-    );
+  if (checkingAuth) return null;
 
   return (
     <div

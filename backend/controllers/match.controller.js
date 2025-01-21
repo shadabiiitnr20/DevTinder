@@ -1,11 +1,12 @@
 import { User } from '../models/user.model.js';
+import { getConnectedUsers, getIO } from '../socket/socket.server.js';
 
 export const swipeRight = async (req, res) => {
   const { _id } = req.user;
   const { likedUserId } = req.params;
   try {
-    const currentUser = await User.findById(_id);
-    const likedUser = await User.findById(likedUserId);
+    const currentUser = await User.findById(_id).select('-password');
+    const likedUser = await User.findById(likedUserId).select('-password');
     //If the liked user does not exist
     if (!likedUser) {
       return res.status(404).json({
@@ -22,7 +23,7 @@ export const swipeRight = async (req, res) => {
     }
     //
     if (!currentUser.likes.includes(likedUserId)) {
-      currentUser.likes[likedUserId];
+      currentUser.likes.push(likedUserId);
       await currentUser.save();
 
       //If it is a match
@@ -30,9 +31,32 @@ export const swipeRight = async (req, res) => {
         currentUser.matches.push(likedUserId);
         likedUser.matches.push(currentUser._id);
         await Promise.all([await currentUser.save(), await likedUser.save()]);
-      }
 
-      //TODO sent notification if it is a match
+        //TODO sent notification if it is a match -> This is done
+        //Send a notification to the liked user
+        const connectedUsers = getConnectedUsers();
+        const io = getIO();
+        const likedUserSocketId = connectedUsers.get(likedUserId);
+        if (likedUserSocketId) {
+          io.to(likedUserSocketId).emit('newMatch', {
+            _id: currentUser._id,
+            name: currentUser.name,
+            image: currentUser.image,
+          });
+        }
+
+        //Send a notification to the current user
+        const currentUserSocketId = connectedUsers.get(
+          currentUser._id.toString()
+        );
+        if (currentUserSocketId) {
+          io.to(currentUserSocketId).emit('newMatch', {
+            _id: likedUser._id,
+            name: likedUser.name,
+            image: likedUser.image,
+          });
+        }
+      }
     }
 
     res.status(200).json({
@@ -53,8 +77,10 @@ export const swipeLeft = async (req, res) => {
   const { _id } = req.user;
   const { dislikedUserId } = req.params;
   try {
-    const currentUser = await User.findById(_id);
-    const dislikedUser = await User.findById(dislikedUserId);
+    const currentUser = await User.findById(_id).select('-password');
+    const dislikedUser = await User.findById(dislikedUserId).select(
+      '-password'
+    );
     //
     if (!dislikedUser) {
       return res.status(404).json({
@@ -71,7 +97,7 @@ export const swipeLeft = async (req, res) => {
     }
     //
     if (!currentUser.dislikes.includes(dislikedUserId)) {
-      currentUser.dislikes[dislikedUserId];
+      currentUser.dislikes.push(dislikedUserId);
       await currentUser.save();
     }
     //
@@ -144,11 +170,11 @@ export const getUsersProfile = async (req, res) => {
           genderPreference: { $in: [currentUser.gender, 'both'] },
         },
       ],
-    });
+    }).select('-password');
     res.status(200).json({
       success: true,
       message: 'Users fetched successfully',
-      matches: users,
+      users,
     });
   } catch (error) {
     console.log('Error in getUserProfile controller', error);
