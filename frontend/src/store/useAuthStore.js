@@ -9,7 +9,6 @@ export const useAuthStore = create((set) => ({
   loading: false,
 
   signup: async (signUpData) => {
-    console.log(signUpData);
     try {
       set({ loading: true });
       const response = await axiosInstance.post('/auth/signup', signUpData);

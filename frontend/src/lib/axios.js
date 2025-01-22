@@ -1,7 +1,11 @@
 import axios from 'axios';
 
-//Update the base URL to match your API server in deployment
+const BASE_URL =
+  import.meta.env.MODE === 'development'
+    ? 'http://localhost:8080/api/'
+    : '/api';
+
 export const axiosInstance = axios.create({
-  baseURL: 'http://localhost:8080/api/',
+  baseURL: BASE_URL,
   withCredentials: true,
 });

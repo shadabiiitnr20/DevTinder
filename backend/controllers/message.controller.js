@@ -12,7 +12,7 @@ export const sendMessage = async (req, res) => {
     });
     await newMessage.save();
 
-    //TODO send the message using socket.io
+    //TODO send the message using socket.io -> DONE
     const io = getIO();
     const connectedUsers = getConnectedUsers();
     const receiverSocketId = connectedUsers.get(receiverId);

@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import { createServer } from 'http';
+import path from 'path';
 //
 import { connectDB } from './db/connectDB.js';
 //
@@ -16,6 +17,8 @@ dotenv.config();
 const app = express();
 const httpServer = createServer(app);
 const PORT = process.env.PORT || 8080;
+
+const __dirname = path.resolve();
 
 //Initialize socket
 initializeSocket(httpServer);
@@ -31,6 +34,13 @@ app.use('/api/auth', authRouter);
 app.use('/api/users', userRouter);
 app.use('/api/matches', matchRouter);
 app.use('/api/messages', messageRouter);
+
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '/frontend/dist')));
+  app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'frontend', 'dist', 'index.html'));
+  });
+}
 
 httpServer.listen(PORT, async () => {
   await connectDB();

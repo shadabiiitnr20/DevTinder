@@ -12,8 +12,6 @@ import ChatPage from './pages/ChatPage';
 const App = () => {
   const { checkAuth, authUser, checkingAuth } = useAuthStore();
 
-  console.log(authUser);
-
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);

@@ -5,7 +5,6 @@ import { useAuthStore } from './useAuthStore';
 
 export const useUserStore = create((set) => ({
   loading: false,
-  //TODO: Re check the update api again
   updateProfile: async (updatedData) => {
     try {
       set({ loading: true });
