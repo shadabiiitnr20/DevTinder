@@ -30,7 +30,7 @@ app.use(cookieParser());
 app.use('/api/auth', authRouter);
 app.use('/api/users', userRouter);
 app.use('/api/matches', matchRouter);
-app.use('api/messages', messageRouter);
+app.use('/api/messages', messageRouter);
 
 httpServer.listen(PORT, async () => {
   await connectDB();
