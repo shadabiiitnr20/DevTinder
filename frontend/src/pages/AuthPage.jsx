@@ -1,10 +1,12 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 //
 import LoginForm from '../components/LoginForm';
 import SignUpForm from '../components/SignUpForm';
 
 const AuthPage = () => {
   const [isLogin, setIsLogin] = useState(false);
+  const { t } = useTranslation();
 
   return (
     <div
@@ -13,7 +15,7 @@ const AuthPage = () => {
     >
       <div className='w-full max-w-md'>
         <h2 className='text-center text-3xl font-extrabold text-white mb-8'>
-          {isLogin ? 'Sign in to Swipe' : 'Create a Swipe account'}
+          {isLogin ? t('loginToAccount') : t('createAccount')}
         </h2>
 
         <div className='bg-white shadow-xl rounded-lg p-8'>
@@ -21,7 +23,7 @@ const AuthPage = () => {
 
           <div className='mt-8 text-center'>
             <p className='text-sm text-gray-600'>
-              {isLogin ? 'New to Swipe?' : 'Already have an account?'}
+              {isLogin ? 'New to DevTinder?' : 'Already have an account?'}
             </p>
 
             <button
